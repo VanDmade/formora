@@ -1,0 +1,20 @@
+{
+    "name": "vandmade/entry-ease",
+    "description": "Frontend form components for Vue.js using the Bootstrap framework, created due to Bootstrap's incompatibility with Vue.js 3.",
+    "type": "library",
+    "license": "Apache License",
+    "autoload": {
+        "psr-4": {
+            "VanDmade\\EntryEase\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Michael D. VanDerwerker"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.0.1",
+        "illuminate/support": "^11.3"
+    }
+}
