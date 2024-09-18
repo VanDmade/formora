@@ -10,6 +10,40 @@
             
         }
     }
+    .ee-form-uploader {
+        max-width: 500px;
+        position: relative;
+        cursor: pointer;
+        border: 1px dashed red;
+        padding: 4px;
+        border-radius: 5px;
+        .ee-form-image {
+            width: 100%;
+        }
+        .ee-form-upload-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-weight: bold;
+        }
+        .ee-form-upload-clear {
+            background: white;
+            border-radius: 50px;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            height: 25px;
+            width: 25px;
+            font-size: 25px;
+            line-height: 25px;
+            text-align: center;
+            .material-icons {
+                vertical-align: top;
+            }
+        }
+    }
 }
 .ee-form-input.ee-no-label {
     .ee-form-control {
