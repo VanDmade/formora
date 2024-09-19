@@ -9,7 +9,7 @@
             :disabled="disabled"
             :readonly="readonly"
             @input="errorList = []">
-            <option value="" disabled hidden>{{ placeholder }}</option>
+            <option v-if="placeholder != ''" value="" disabled hidden>{{ placeholder }}</option>
             <option v-if="newEntry" :value="newEntryValue">{{ newEntryText }}</option>
             <option v-for="(item, itemIndex) in getItems()"
                 :value="yesNo ? item.value : item[inputValue]">{{ yesNo ? item.text : item[inputText] }}</option>
