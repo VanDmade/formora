@@ -1,6 +1,6 @@
 <template>
     <div class="form-floating ee-form-input">
-        <div v-if="image" class="ee-form-uploader" @click="upload">
+        <div v-if="image" class="ee-form-uploader" @click="upload(false)">
             <img v-show="!multiple || total <= 1" :src="default" :id="id" class="ee-image ee-image-preview" :class="{ 'ee-image-cursor': !selected }">
             <div :id="id + '-container'" class="ee-image-container" :class="{ 'scroll': total > 1 }"></div>
             <div v-if="!selected" class="ee-form-upload-text">
@@ -11,6 +11,9 @@
             </div>
             <div v-else-if="!multiple || total <= 1" class="ee-form-upload-clear" @click="clear"><span class="material-icons">close</span></div>
         </div>
+        <div class="d-grid" v-if="selected">
+            <button type="button" class="btn btn-primary btn-sm mt-3" block @click="upload(true)">Upload</button>
+        </div>
         <div v-if="description != null" class="ee-upload-description">{{ description }}</div>
         <input v-show="false" type="file" :ref="'uploader-'+id" :id="'uploader-'+id" @change="change" :multiple="multiple">
     </div>
@@ -20,17 +23,38 @@ export default {
     data: function() {
         return {
             id: 'vm-file_'+Math.random().toString(36).slice(2),
+            key: 0,
             default: this.$url+'default.png',
             selected: false,
             details: {},
             total: 0,
             loading: false,
             errorList: [],
+            initialValue: [],
         }
     },
+    mounted: function() {
+        setTimeout(() => {
+            if (this.value == null) {
+                return;
+            }
+            var container = document.getElementById(this.id+'-container');
+            var previewImage = document.getElementById(this.id);
+            for (let i = 0; i < this.value.length; i++) {
+                let [imageContainer, image, clear] = this.setupImage(this.value[i], i);
+                imageContainer.appendChild(image);
+                imageContainer.appendChild(clear);
+                container.appendChild(imageContainer);
+            }
+            if (this.value.length > 0) {
+                this.total = this.value.length;
+                this.selected = true;
+            }
+        }, 50);
+    },
     methods: {
-        upload: function() {
-            if (!this.selected) {
+        upload: function(ignoreSelected = false) {
+            if (!this.selected || ignoreSelected == true) {
                 this.errorList = [];
                 this.$refs['uploader-'+this.id].click();
             }
@@ -50,67 +74,13 @@ export default {
                 let reader = new FileReader();
                 function readFile(index) {
                     if (index >= input.files.length) return;
-                    reader.onload = function(e) {
+                    reader.onload = function(event) {
                         setTimeout(() => {
-                            // Creates hte container for the clear and image
-                            let imageContainer = document.createElement('div');
-                            imageContainer.className = 'ee-form-multiple-image-container';
-                            if (_this.thumbnail) {
-                                // Adds an event to allow the user to select a new thumbnail without re-uploading
-                                imageContainer.addEventListener('click', (e) => {
-                                    // Makes sure not to mix up click functionality
-                                    if (e.target.className.indexOf('ee-form-upload-clear') != -1 ||
-                                        e.target.className.indexOf('material-icons') != -1) {
-                                        return;
-                                    }
-                                    let containers = document.querySelectorAll('.ee-form-multiple-image-container');
-                                    const target = e.target.closest('.ee-form-multiple-image-container');
-                                    let index = Array.from(containers).indexOf(target);
-                                    document.getElementById(_this.id+'-container').prepend(target);
-                                    // Removes the current file from it's current location and then adds it to the front
-                                    let thumbnail = _this.value.splice(index, 1);
-                                    _this.value.unshift(thumbnail[0]);
-                                });
-                            }
-                            // Creates the actual image to be displayed
-                            let image = document.createElement('img');
-                            image.className = ['ee-image',
-                                index == 0 && _this.thumbnail ? ' ee-thumbnail-image' : '',
-                                _this.thumbnail ? ' ee-thumbnail-selector' : '',
-                            ].join(' ');
-                            image.src = e.target.result;
-                            // Creates the icon to be clicked
-                            let icon = document.createElement('span');
-                            icon.className = 'material-icons';
-                            icon.textContent = 'close';
-                            // Creates the icon to be used to clear
-                            let clear = document.createElement('span');
-                            clear.className = 'ee-form-upload-clear ' + index;
-                            clear.appendChild(icon);
-                            clear.addEventListener('click', (e) => {
-                                let buttons = document.querySelectorAll('.ee-form-upload-clear');
-                                const target = e.target.closest('.ee-form-upload-clear');
-                                let index = Array.from(buttons).indexOf(target);
-                                // Removes the image
-                                target.closest('.ee-form-multiple-image-container').remove();
-                                _this.value.splice(index, 1);
-                                _this.total--;
-                                if (_this.total == 1) {
-                                    // Gets the other containers to find the last image
-                                    let containers = document.getElementsByClassName('ee-form-multiple-image-container');
-                                    if (containers.length == 1) {
-                                        let image = containers[0].querySelector('img');
-                                        let previewImage = document.getElementById(_this.id);
-                                        containers[0].remove();
-                                        previewImage.src = image.src;
-                                    }
-                                } else if (_this.total == 0) {
-                                    _this.selected = false;
-                                }
-                            });
+                            let [imageContainer, image, clear] = _this.setupImage(event, index);
                             let extension = input.files[index].name.split('.');
                             // Gets the details for the specific image to do appropraite comparisons
                             try {
+                                // Creates the details object for this specific image, if needed, it can be setup to be used.
                                 let details = {
                                     name: input.files[index].name,
                                     type: input.files[index].type,
@@ -163,7 +133,18 @@ export default {
         change: function(event) {
             this.selected = true;
             this.view(event);
-            this.$emit('update:modelValue', Array.from(event.target.files));
+            let value = Array.from(this.value);
+            let files = Array.from(event.target.files);
+            // Appends the files to the current list
+            for (let i = 0; i < files.length; i++) {
+                value.push({
+                    id: 'NEW-' + (this.key++),
+                    file: files[i],
+                    path: null,
+                });
+            }
+            this.total = value.length;
+            this.value = value;
         },
         clear: function() {
             this.errorList = [];
@@ -174,6 +155,73 @@ export default {
             setTimeout(() => {
                 this.selected = false;
             }, 10);
+        },
+        setThumbnail: function(event) {
+            // Makes sure not to mix up click functionality
+            if (event.target.className.indexOf('ee-form-upload-clear') != -1 ||
+                event.target.className.indexOf('material-icons') != -1) {
+                return;
+            }
+            let containers = document.querySelectorAll('.ee-form-multiple-image-container');
+            const target = event.target.closest('.ee-form-multiple-image-container');
+            let index = Array.from(containers).indexOf(target);
+            document.getElementById(this.id+'-container').prepend(target);
+            // Removes the current file from it's current location and then adds it to the front
+            let thumbnail = this.value.splice(index, 1);
+            this.value.unshift(thumbnail[0]);
+        },
+        setupImage: function(event, index = 0) {
+            let _this = this;
+            // Creates hte container for the clear and image
+            let imageContainer = document.createElement('div');
+            imageContainer.className = 'ee-form-multiple-image-container';
+            if (_this.thumbnail) {
+                // Adds an event to allow the user to select a new thumbnail without re-uploading
+                imageContainer.addEventListener('click', (event) => {
+                    _this.setThumbnail(event);
+                });
+            }
+            // Creates the actual image to be displayed
+            let image = document.createElement('img');
+            image.className = ['ee-image',
+                index == 0 && _this.thumbnail ? ' ee-thumbnail-image' : '',
+                _this.thumbnail ? ' ee-thumbnail-selector' : '',
+            ].join(' ');
+            // Determines if the event is the object from the server or actual DOM event
+            image.src = typeof(event.id) != 'undefined' ? event.path : event.target.result;
+            // Creates the icon to be clicked
+            let icon = document.createElement('span');
+            icon.className = 'material-icons';
+            icon.textContent = 'close';
+            // Creates the icon to be used to clear
+            let clear = document.createElement('span');
+            clear.className = 'ee-form-upload-clear ' + index;
+            clear.appendChild(icon);
+            clear.addEventListener('click', (event) => {
+                _this.remove(event);
+            });
+            return [imageContainer, image, clear];
+        },
+        remove: function(event) {
+            let buttons = document.querySelectorAll('.ee-form-upload-clear');
+            const target = event.target.closest('.ee-form-upload-clear');
+            let index = Array.from(buttons).indexOf(target);
+            // Removes the image
+            target.closest('.ee-form-multiple-image-container').remove();
+            this.value.splice(index, 1);
+            this.total--;
+            if (this.total == 1) {
+                // Gets the other containers to find the last image
+                let containers = document.getElementsByClassName('ee-form-multiple-image-container');
+                if (containers.length == 1) {
+                    let image = containers[0].querySelector('img');
+                    let previewImage = document.getElementById(this.id);
+                    containers[0].remove();
+                    previewImage.src = image.src;
+                }
+            } else if (this.total == 0) {
+                this.selected = false;
+            }
         },
         reduce: function (numerator, denominator){
             // Finds the greatest common denominator
@@ -200,9 +248,6 @@ export default {
             immediate: true,
             handler: function(value) {
                 let image = document.getElementById(this.id);
-                if (image != null) {
-
-                }
             },
             deep: true,
         },
