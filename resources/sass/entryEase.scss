@@ -118,8 +118,6 @@
             line-height: 0.75em;
             border-radius: 10px;
             font-weight: bold;
-            margin-left: 4x;
-            margin-right: 4px;
         }
         .ee-tag:hover {
             opacity: 0.75;
@@ -127,6 +125,7 @@
         .input-group {
             display: inline-block;
             width: auto;
+            margin: 0 4px;
             .material-icons {
                 vertical-align: top;
                 color: #fff;
