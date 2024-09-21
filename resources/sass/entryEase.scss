@@ -106,12 +106,14 @@
     }
     .ee-tags {
         margin: 0.5em 0;
-        height: 21px;
+        min-height: 24px;
         .ee-tag {
             cursor: pointer;
             display: inline-block;
             vertical-align: top;
             padding: 0.5em 0.75em;
+            height: 24px;
+            padding-top: 7px;
             font-size: 0.75em;
             line-height: 0.75em;
             border-radius: 10px;
@@ -121,8 +123,19 @@
         .ee-tag:hover {
             opacity: 0.75;
         }
-        .ee-tag:first-child {
-            margin-left: 0;
+        .input-group {
+            display: inline-block;
+            width: auto;
+            .material-icons {
+                color: #fff;
+                background: var(--bs-secondary);
+                border-radius: 0 10px 10px 0;
+                padding-right: 2px;
+            }
+            .material-icons:hover {
+                cursor: pointer;
+                opacity: 0.65;
+            }
         }
     }
 }

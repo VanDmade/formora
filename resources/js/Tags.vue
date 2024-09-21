@@ -37,10 +37,12 @@
             <li v-for="(error, i) in errorList" :key="id+'-error-'+i" class="form-error ee-form-error">{{ error }}</li>
         </ul>
         <div class="ee-tags mb-2">
-            <span class="ee-tag"
-                v-for="(tag, index) in value" :key="id + '_' + index"
-                @click="item = JSON.parse(JSON.stringify(tag)); $refs[id].focus();"
-                :style="{ background: tag.color, color: textColor(tag.color) }">{{ tag.value }}</span>
+            <span class="input-group" v-for="(tag, index) in value" :key="id + '_' + index">
+                <span class="ee-tag"
+                    @click="item = JSON.parse(JSON.stringify(tag)); $refs[id].focus();"
+                    :style="{ background: tag.color, color: textColor(tag.color) }">{{ tag.value }}</span>
+                <span class="material-icons" @click="remove(index)">close</span>
+            </span>
         </div>
     </div>
 </template>
@@ -99,6 +101,9 @@ export default {
             console.log(this.item);
             // Appends the list item to the model
             this.value.push(item);
+        },
+        remove: function(index) {
+            this.value.splice(index, 1);
         },
         blur: function() {
             setTimeout(() => {
