@@ -3,7 +3,7 @@
         <div class="input-group">
             <div class="form-floating ee-form-input" :class="{ 'ee-no-label': label == null || label == '' }">
                 <input
-                    v-model="item.value"
+                    v-model="item.name"
                     type="input"
                     :ref="id"
                     :id="id"
@@ -17,12 +17,12 @@
                     @focus="search = true"
                     @blur="blur">
                 <label v-if="label != null && label != ''" :for="id" class="form-label ee-form-label">{{ label }}</label>
-                <div class="ee-tag-selector shadow" v-if="search && searchList().length > 0 && item.value != ''">
+                <div class="ee-tag-selector shadow" v-if="search && searchList().length > 0 && item.name != ''">
                     <div class="ee-tags mb-0 mt-0">
                         <div class="ee-tag-container" v-for="(tag, index) in searchList()" :key="id + '_select_' + index">
                             <span class="ee-tag"
                                 @click="item = tag; add(); search = false;"
-                                :style="{ background: tag.color, color: textColor(tag.color) }">{{ tag.value }}</span>
+                                :style="{ background: tag.color, color: textColor(tag.color) }">{{ tag.name }}</span>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
             <span class="input-group" v-for="(tag, index) in value" :key="id + '_' + index">
                 <span class="ee-tag"
                     @click="item = JSON.parse(JSON.stringify(tag)); $refs[id].focus();"
-                    :style="{ background: tag.color, color: textColor(tag.color) }">{{ tag.value }}</span>
+                    :style="{ background: tag.color, color: textColor(tag.color) }">{{ tag.name }}</span>
                 <span class="material-icons" @click="remove(index)">close</span>
             </span>
         </div>
@@ -54,7 +54,7 @@ export default {
             item: {
                 id: 'NEW-0',
                 color: this.generateColor(),
-                value: '',
+                name: '',
             },
             search: false,
             counter: 0,
@@ -68,27 +68,27 @@ export default {
         add: function() {
             this.errorList = [];
             // Validates that the tag meets the appropriate character length
-            if (this.item.value.length < this.minLength) {
+            if (this.item.name.length < this.minLength) {
                 this.errorList.push(`The tag must be at least ${this.minLength} characters long.`);
                 return false;
             }
-            if (this.item.value.length > this.maxLength) {
+            if (this.item.name.length > this.maxLength) {
                 this.errorList.push(`The tag must be at most ${this.maxLength} characters long.`);
                 return false;
             }
             let item = {
                 id: JSON.parse(JSON.stringify(this.item.id)),
                 color: JSON.parse(JSON.stringify(this.item.color == '' ? this.generateColor() : this.item.color)),
-                value: JSON.parse(JSON.stringify(this.item.value)),
+                name: JSON.parse(JSON.stringify(this.item.name)),
             };
             this.item = {
                 id: 'NEW-'+(++this.counter),
                 color: this.generateColor(),
-                value: '',
+                name: '',
             };
             for (let i = 0; i < this.value.length; i++) {
-                if (this.value[i].value.toLowerCase() == item.value.toLowerCase() || this.value[i].id == item.id) {
-                    let previousValue = item.value;
+                if (this.value[i].name.toLowerCase() == item.name.toLowerCase() || this.value[i].id == item.id) {
+                    let previousValue = item.name;
                     // Moves the value to the front of the list to allow for ease of seeing the addition
                     if (this.value[i].id == item.id && previousValue != this.value[i].id) {
                         item.id = 'NEW-NAME-'+(++this.counter);
@@ -113,7 +113,7 @@ export default {
         searchList: function() {
             let list = [];
             for (let i = 0; i < this.list.length; i++) {
-                if (this.list[i].value.toLowerCase().indexOf(this.item.value.toLowerCase()) !== -1) {
+                if (this.list[i].name.toLowerCase().indexOf(this.item.name.toLowerCase()) !== -1) {
                     list.push(this.list[i]);
                 }
             }
