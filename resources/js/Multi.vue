@@ -2,21 +2,47 @@
     <div class="ee-form-multi-entries">
         <label v-if="label != null && label != ''" class="ee-form-label mb-3">{{ label }}</label>
         <div class="ee-form-multi-entry" v-for="(item, multiIndex) in value">
-            <div class="input-group">
+            <div :class="{ 'input-group': !breakpoint('sm') }">
                 <vm-input
+                    v-if="type == 'input'"
                     v-model="item.value"
                     type="input"
                     :label="inputLabel"
                     :placeholder="placeholder"
-                    :inputClass="inputClass"
-                    :errors="getErrors(multiIndex)"
+                    :input-class="inputClass"
                     :disabled="disabled"
                     :readonly="readonly"
                     hide-details></vm-input>
-                <button
-                    @click="remove(multiIndex)"
-                    class="btn btn-danger"
-                    :disabled="removeAll == false && value.length == 1">{{ removeLabel }}</button>
+                <vm-select
+                    v-if="type == 'select'"
+                    v-model="item.value"
+                    :items="items"
+                    :label="inputLabel"
+                    :input-class="inputClass"
+                    :disabled="disabled"
+                    :readonly="readonly"
+                    :yes-no="yesNo"
+                    :new-entry="newEntry"
+                    :new-entry-text="newEntryText"
+                    :new-entry-value="newEntryValue"
+                    hide-details></vm-select>
+                <vm-input
+                    v-if="item.value == '0'"
+                    v-model="item.new_entry"
+                    type="input"
+                    :label="newEntryText"
+                    :placeholder="placeholder"
+                    :input-class="inputClass"
+                    :class="{ 'mt-4': breakpoint('sm') }"
+                    :disabled="disabled"
+                    :readonly="readonly"
+                    hide-details />
+                <div class="ee-button-container" :class="{ 'd-grid mt-4': breakpoint('sm') }">
+                    <button
+                        @click="remove(multiIndex)"
+                        class="btn btn-danger"
+                        :disabled="removeAll == false && value.length == 1">{{ removeLabel }}</button>
+                </div>
             </div>
             <ul v-if="!hideDetails" class="form-errors ee-form-errors mb-2">
                 <li v-for="(error, i) in getErrors(multiIndex)"
@@ -37,6 +63,7 @@ export default {
             template: {
                 id: 'NEW-0',
                 value: '',
+                new_entry: '',
             },
         }
     },
@@ -63,8 +90,8 @@ export default {
             }
             this.value.splice(index, 1);
         },
-        getErrors: function(index) {
-            return typeof(this.errorList[index]) !== 'undefined' ? this.errorList[index] : [];
+        getErrors: function(index, key = '') {
+            return typeof(this.errorList[index]) !== 'undefined' ? this.errorList[index + (key == '' ? '' : ('.'+key))] : [];
         },
     },
     computed: {
@@ -86,9 +113,15 @@ export default {
         },
     },
     props: {
-        modelValue: { type: [Array], default: '' },
+        modelValue: { type: Array, default: [] },
+        type: { type: String, default: 'input' },
         label: { type: String, default: null },
         placeholder: { type: String, default: '' },
+        items: { type: [Object, Array], default: [] },
+        yesNo: { type: Boolean, default: false },
+        newEntry: { type: Boolean, default: false },
+        newEntryText: { type: String, default: 'New Entry' },
+        newEntryValue: { type: [String, Number], default: '0' },
         inputLabel: { type: String, default: null },
         inputClass: { type: String, default: '' },
         errors: { type: [Array, Object], default: [] },

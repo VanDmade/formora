@@ -145,6 +145,20 @@
         padding-top: 0.625rem;
     }
 }
+.ee-form-multi-entries {
+    .ee-button-container {
+        .btn {
+            height: 100%;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+    }
+    .ee-button-container.d-grid {
+        .btn {
+            border-radius: var(--bs-border-radius);
+        }
+    }
+}
 .input-group > .form-control.ee-form-control-color {
     height: inherit;
     flex: 0 0 4em;
