@@ -61,6 +61,7 @@
             text-align: center;
             .material-icons {
                 vertical-align: top;
+                line-height: 25px;
             }
         }
         .ee-image-container {
@@ -85,9 +86,52 @@
             padding-bottom: 12px;
         }
     }
+    .ee-tag-selector {
+        border: 1px solid var(--bs-border-color);
+        min-width: 200px;
+        padding: 1em;
+        border-radius: 5px;
+        margin-top: 0.25em;
+        position: absolute;
+        background: #fff;
+        z-index: 99;
+        .ee-tags {
+            min-height: 200px;
+            overflow-y: scroll;
+            .ee-tag {
+                margin-left: 0;
+                margin-bottom: 0.5em;
+            }
+        }
+    }
+    .ee-tags {
+        margin: 0.5em 0;
+        height: 21px;
+        .ee-tag {
+            cursor: pointer;
+            display: inline-block;
+            vertical-align: top;
+            padding: 0.5em 0.75em;
+            font-size: 0.75em;
+            line-height: 0.75em;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        .ee-tag:hover {
+            opacity: 0.75;
+        }
+        .ee-tag:first-child {
+            margin-left: 0;
+        }
+    }
 }
 .ee-form-input.ee-no-label {
     .ee-form-control {
         padding-top: 0.625rem;
     }
+}
+.input-group > .form-control.ee-form-control-color {
+    height: inherit;
+    flex: 0 0 4em;
 }
