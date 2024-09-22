@@ -146,16 +146,23 @@
     }
 }
 .ee-form-multi-entries {
-    .ee-button-container {
-        .btn {
-            height: 100%;
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
+    .ee-form-multi-entry {
+        .ee-button-container {
+            .btn {
+                height: 100%;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+            }
         }
-    }
-    .ee-button-container.d-grid {
-        .btn {
-            border-radius: var(--bs-border-radius);
+        .ee-button-container.d-grid {
+            .btn {
+                border-radius: var(--bs-border-radius);
+            }
+        }
+        .ee-btn-reorder {
+            .material-icons {
+                vertical-align: middle;
+            }
         }
     }
 }

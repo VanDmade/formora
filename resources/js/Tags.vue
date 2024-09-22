@@ -36,7 +36,7 @@
         <ul v-if="!hideDetails && errorList.length > 0" class="form-errors ee-form-errors mb-1">
             <li v-for="(error, i) in errorList" :key="id+'-error-'+i" class="form-error ee-form-error">{{ error }}</li>
         </ul>
-        <div class="ee-tags mb-2">
+        <div class="ee-tags mb-2" v-if="value.length > 0">
             <span class="input-group" v-for="(tag, index) in value" :key="id + '_' + index">
                 <span class="ee-tag"
                     @click="item = JSON.parse(JSON.stringify(tag)); $refs[id].focus();"
