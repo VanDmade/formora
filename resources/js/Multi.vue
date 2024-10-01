@@ -8,30 +8,36 @@
                     v-if="value.length > 1 && reorganize"
                     type="button"
                     :disabled="multiIndex == 0"
-                    class="btn ee-btn-reorder btn-secondary px-1"
+                    class="btn ee-btn-reorder ee-btn-reorder-upward btn-secondary px-1"
                     @click="reorderUp(multiIndex)"><span class="material-icons">arrow_upward</span></button>
                 <button
                     v-if="value.length > 1 && reorganize"
                     type="button"
                     :disabled="multiIndex == value.length - 1"
-                    class="btn ee-btn-reorder btn-secondary px-1"
+                    class="btn ee-btn-reorder ee-btn-reorder-downward btn-secondary px-1"
                     @click="reorderDown(multiIndex)"><span class="material-icons">arrow_downward</span></button>
-                <div class="ee-button-container" :class="{ 'd-grid mt-4': breakpoint('sm') }">
+                <div class="ee-button-container" :class="{ 'd-grid mt-4': breakpoint('sm'), 'ee-button-remove-border-radius': settings }">
                     <button
                         type="button"
                         class="btn btn-danger"
                         :disabled="removeAll == false && value.length == 1"
                         @click="remove(multiIndex)">{{ removeLabel }}</button>
                 </div>
+                <slot :value="value" :index="multiIndex" name="settings"></slot>
             </div>
-            <p v-if="slugs && ((item.value != '' && item.value != '0') || (newEntry && item.value == '0' && item.new_entry != ''))" class="notes mb-0 pl-1">{{ item.slug }}</p>
+            <div :class="{ 'ee-form-entry-flex': !breakpoint('sm') }">
+                <p class="ee-form-entry-output notes pl-1 mb-0"><slot :value="value" :index="multiIndex" name="output"></slot></p>
+                <p v-if="slugs && ((item.value != '' && item.value != '0') || (newEntry && item.value == '0' && item.new_entry != ''))" class="notes mb-0 pl-1">{{ item.slug }}</p>
+            </div>
             <ul v-if="!hideDetails" class="form-errors ee-form-errors mb-2">
                 <li v-for="(error, i) in getErrors(multiIndex)"
                     :key="id+'-error-'+i"
                     class="form-error ee-form-error">{{ error }}</li>
             </ul>
         </div>
-        <button v-if="addButton == true" type="button" @click="add" class="btn btn-primary">{{ addLabel }}</button>
+        <div class="ee-button-container" :class="{ 'd-grid': breakpoint('sm') }">
+            <button v-if="addButton == true" type="button" @click="add" class="btn btn-primary">{{ addLabel }}</button>
+        </div>
     </div>
 </template>
 <script>
@@ -56,6 +62,7 @@ export default {
             template.id = 'NEW-'+this.counter;
             template.slug = 'slug-'+Math.random().toString(16).slice(10);
             this.value.push(template);
+            this.$emit('add');
         },
         remove: function(index) {
             if (this.removeAll == false && this.value.length == 1) {
@@ -66,6 +73,7 @@ export default {
                 this.errorList[index] = [];
             }
             this.value.splice(index, 1);
+            this.$emit('remove');
         },
         reorderUp: function(index) {
             if (index == 0) {
@@ -119,10 +127,8 @@ export default {
         removeLabel: { type: String, default: 'Remove' },
         slugs: { type: Boolean, default: false },
         reorganize: { type: Boolean, default: true },
+        settings: { type: Boolean, default: false },
         template: { type: Object, default: { id: '', value: '', slug: '' } },
     }
 }
 </script>
-<style>
-
-</style>

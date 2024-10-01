@@ -154,6 +154,11 @@
                 border-bottom-left-radius: 0;
             }
         }
+        .ee-button-container.ee-button-remove-border-radius {
+            .btn {
+                border-radius: 0;
+            }
+        }
         .ee-button-container.d-grid {
             .btn {
                 border-radius: var(--bs-border-radius);
@@ -162,6 +167,20 @@
         .ee-btn-reorder {
             .material-icons {
                 vertical-align: middle;
+            }
+        }
+        .ee-btn-reorder.ee-btn-reorder-upward {
+            @media (max-width: 768px) {
+                width: 50%;
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+        }
+        .ee-btn-reorder.ee-btn-reorder-downward {
+            @media (max-width: 768px) {
+                width: 50%;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
             }
         }
     }
