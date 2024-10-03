@@ -33,10 +33,11 @@
                 class="form-control form-control-color ee-form-control-color"
                 @change="$refs[id].focus()">
         </div>
+        <p class="notes mb-2 pl-1">Press enter once you have entered the name of the tag.</p>
         <ul v-if="!hideDetails && errorList.length > 0" class="form-errors ee-form-errors mb-1">
             <li v-for="(error, i) in errorList" :key="id+'-error-'+i" class="form-error ee-form-error">{{ error }}</li>
         </ul>
-        <div class="ee-tags mb-2" v-if="value.length > 0">
+        <div class="ee-tags mb-2">
             <span class="input-group" v-for="(tag, index) in value" :key="id + '_' + index">
                 <span class="ee-tag"
                     @click="item = JSON.parse(JSON.stringify(tag)); $refs[id].focus();"
@@ -50,7 +51,7 @@
 export default {
     data: function() {
         return {
-            id: 'vm-tags_'+Math.random().toString(16).slice(2),
+            id: 'ee-tags_'+Math.random().toString(16).slice(2),
             item: {
                 id: 'NEW-0',
                 color: this.generateColor(),

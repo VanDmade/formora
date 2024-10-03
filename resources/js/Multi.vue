@@ -1,41 +1,54 @@
 <template>
     <div class="ee-form-multi-entries">
-        <label v-if="label != null && label != ''" class="ee-form-label mb-3">{{ label }}</label>
-        <div class="ee-form-multi-entry" v-for="(item, multiIndex) in value">
-            <div :class="{ 'input-group': !breakpoint('sm') }">
-                <slot :value="value" :index="multiIndex" name="entry"></slot>
-                <button
-                    v-if="value.length > 1 && reorganize"
-                    type="button"
-                    :disabled="multiIndex == 0"
-                    class="btn ee-btn-reorder ee-btn-reorder-upward btn-secondary px-1"
-                    @click="reorderUp(multiIndex)"><span class="material-icons">arrow_upward</span></button>
-                <button
-                    v-if="value.length > 1 && reorganize"
-                    type="button"
-                    :disabled="multiIndex == value.length - 1"
-                    class="btn ee-btn-reorder ee-btn-reorder-downward btn-secondary px-1"
-                    @click="reorderDown(multiIndex)"><span class="material-icons">arrow_downward</span></button>
-                <div class="ee-button-container" :class="{ 'd-grid mt-4': breakpoint('sm'), 'ee-button-remove-border-radius': settings }">
-                    <button
-                        type="button"
-                        class="btn btn-danger"
-                        :disabled="removeAll == false && value.length == 1"
-                        @click="remove(multiIndex)">{{ removeLabel }}</button>
-                </div>
-                <slot :value="value" :index="multiIndex" name="settings"></slot>
+        <div class="ee-form-multi-entries-label">
+            <div class="mt-4">
+                <h5 v-if="label != null" class="mt-0" :class="{ 'mb-4': notes == null, 'mb-1': notes != null }">{{ label }}</h5>
+                <p v-if="notes != null" class="notes">{{ notes }}</p>
             </div>
-            <div :class="{ 'ee-form-entry-flex': !breakpoint('sm') }">
-                <p class="ee-form-entry-output notes pl-1 mb-0"><slot :value="value" :index="multiIndex" name="output"></slot></p>
-                <p v-if="slugs && ((item.value != '' && item.value != '0') || (newEntry && item.value == '0' && item.new_entry != ''))" class="notes mb-0 pl-1">{{ item.slug }}</p>
+            <div class="ee-form-multi-entries-add">
+                <button type="button" @click="add" class="btn btn-primary btn-sm mt-4">{{ addLabel }}</button>
             </div>
-            <ul v-if="!hideDetails" class="form-errors ee-form-errors mb-2">
-                <li v-for="(error, i) in getErrors(multiIndex)"
-                    :key="id+'-error-'+i"
-                    class="form-error ee-form-error">{{ error }}</li>
-            </ul>
         </div>
-        <div class="ee-button-container" :class="{ 'd-grid': breakpoint('sm') }">
+        <div class="ee-form-multi-entry" v-for="(mainItem, multiIndex) in value">
+            <div v-for="(item, alternativeIndex) in ([mainItem].concat(typeof(mainItem.alternatives) !== 'undefined' ? mainItem.alternatives : []))">
+                <div :class="{ 'input-group': !breakpoint('sm') }">
+                    <span v-if="steps && !breakpoint('sm')" class="input-group-text">{{ item.steps == null ? (multiIndex + 1) : item.steps }}</span>
+                    <slot :value="value" :index="multiIndex" :alternativeIndex="alternativeIndex == 0 ? null : (alternativeIndex - 1)" name="entry"></slot>
+                    <button
+                        v-if="value.length > 1 && reorganize && alternativeIndex == 0"
+                        type="button"
+                        :disabled="multiIndex == 0"
+                        class="btn ee-btn-reorder ee-btn-reorder-upward btn-outline-secondary px-1"
+                        @click="reorderUp(multiIndex)"><span class="material-icons">arrow_upward</span></button>
+                    <button
+                        v-if="value.length > 1 && reorganize && alternativeIndex == 0"
+                        type="button"
+                        :disabled="multiIndex == value.length - 1"
+                        class="btn ee-btn-reorder ee-btn-reorder-downward btn-outline-secondary px-1"
+                        @click="reorderDown(multiIndex)"><span class="material-icons">arrow_downward</span></button>
+                    <div class="ee-button-container" :class="{ 'd-grid mt-4': breakpoint('sm'), 'ee-button-remove-border-radius': settings }">
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            :disabled="removeAll == false && value.length == 1 && alternativeIndex == 0"
+                            @click="remove(multiIndex, alternativeIndex == 0 ? null : (alternativeIndex - 1))">{{ isAskingToRemove(multiIndex, alternativeIndex == 0 ? null : (alternativeIndex - 1)) ? 'Are your sure?' : removeLabel }}</button>
+                    </div>
+                    <slot :value="value" :index="multiIndex" :alternativeIndex="alternativeIndex == 0 ? null : (alternativeIndex - 1)" name="settings"></slot>
+                </div>
+                <div :class="{ 'ee-form-entry-flex': !breakpoint('sm') }" class="mb-2" style="min-height: 18px;">
+                    <p class="ee-form-entry-output notes pl-1 mb-0">
+                        <slot :value="value" :index="multiIndex" :alternativeIndex="alternativeIndex == 0 ? null : (alternativeIndex - 1)" name="output"></slot>
+                    </p>
+                    <p v-if="slugs" class="notes mb-0 pl-1">{{ item.slug }}</p>
+                </div>
+                <ul v-if="!hideDetails && (hideDetailsWhenNoErrors && getErrors(multiIndex).length > 0)" class="form-errors ee-form-errors mb-2">
+                    <li v-for="(error, i) in getErrors(multiIndex)"
+                        :key="id+'-error-'+i"
+                        class="form-error ee-form-error">{{ error }}</li>
+                </ul>
+            </div>
+        </div>
+        <div v-if="breakpoint('sm')" class="ee-button-container d-grid">
             <button v-if="addButton == true" type="button" @click="add" class="btn btn-primary">{{ addLabel }}</button>
         </div>
     </div>
@@ -44,8 +57,9 @@
 export default {
     data: function() {
         return {
-            id: 'vm-multi_'+Math.random().toString(16).slice(2),
+            id: 'ee-multi_'+Math.random().toString(16).slice(2),
             errorList: [],
+            asking: [],
             counter: 0,
         }
     },
@@ -64,15 +78,38 @@ export default {
             this.value.push(template);
             this.$emit('add');
         },
-        remove: function(index) {
-            if (this.removeAll == false && this.value.length == 1) {
+        remove: function(index, alternativeIndex = null) {
+            if (this.removeAll == false && this.value.length == 1 && alternativeIndex == null) {
                 return false;
             }
             // Clears the errors
             if (typeof(this.errorList[index]) != 'undefined') {
                 this.errorList[index] = [];
             }
-            this.value.splice(index, 1);
+            let key = index + (alternativeIndex != null ? ('-' + alternativeIndex) : '');
+            if (this.isAskingToRemove(index, alternativeIndex)) {
+                this.asking[key] = false;
+                this.fullyRemove(index, alternativeIndex);
+            } else {
+                this.asking[key] = true;
+                setTimeout(() => {
+                    this.asking[key] = false;
+                }, 2500);
+            }
+        },
+        isAskingToRemove: function(index, alternativeIndex = null) {
+            let key = index + (alternativeIndex != null ? ('-' + alternativeIndex) : '');
+            return typeof(this.asking[key]) !== 'undefined' ? this.asking[key] : false; 
+        },
+        fullyRemove: function(index, alternativeIndex = null) {
+            if (this.removeAll == false && this.value.length == 1 && alternativeIndex == null) {
+                return false;
+            }
+            if (alternativeIndex != null && typeof(this.value[index].alternatives) !== 'undefined') {
+                this.value[index].alternatives.splice(alternativeIndex, 1);
+            } else {
+                this.value.splice(index, 1);
+            }
             this.$emit('remove');
         },
         reorderUp: function(index) {
@@ -120,12 +157,16 @@ export default {
         errors: { type: [Array, Object], default: [] },
         disabled: { type: Boolean, default: false },
         hideDetails: { type: Boolean, default: false },
+        hideDetailsWhenNoErrors: { type: Boolean, default: false },
         removeAll: { type: Boolean, default: false },
         startWithOne: { type: Boolean, default: true },
+        label: { type: String, default: null },
+        notes: { type: String, default: null },
         addLabel: { type: String, default: 'Add' },
         addButton: { type: Boolean, default: true },
         removeLabel: { type: String, default: 'Remove' },
         slugs: { type: Boolean, default: false },
+        steps: { type: Boolean, default: false },
         reorganize: { type: Boolean, default: true },
         settings: { type: Boolean, default: false },
         template: { type: Object, default: { id: '', value: '', slug: '' } },

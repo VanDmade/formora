@@ -27,6 +27,9 @@
         border: 1px dashed var(--bs-body-color);
         padding: 4px;
         border-radius: 5px;
+        @media (max-width: 768px) {
+            max-width: 100%;
+        }
         .ee-image {
             max-width: 100%;
             cursor: default;
@@ -146,6 +149,13 @@
     }
 }
 .ee-form-multi-entries {
+    .ee-form-multi-entries-label {
+        display: flex;
+        .ee-form-multi-entries-add {
+            text-align: right;
+            flex: 1;
+        }
+    }
     .ee-form-multi-entry {
         .ee-button-container {
             .btn {
@@ -165,8 +175,17 @@
             }
         }
         .ee-btn-reorder {
+            @media (max-width: 768px) {
+                margin-top: 16px;
+            }
             .material-icons {
                 vertical-align: middle;
+            }
+        }
+        .ee-form-entry-flex {
+            display: flex;
+            .ee-form-entry-output {
+                flex: 4;
             }
         }
         .ee-btn-reorder.ee-btn-reorder-upward {

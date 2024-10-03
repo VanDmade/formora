@@ -22,7 +22,7 @@
 export default {
     data: function() {
         return {
-            id: 'vm-file_'+Math.random().toString(36).slice(2),
+            id: 'ee-file_'+Math.random().toString(36).slice(2),
             key: 0,
             default: this.$url+'default.png',
             selected: false,

@@ -20,7 +20,7 @@
 export default {
     data: function() {
         return {
-            id: 'vm-checkbox_'+Math.random().toString(16).slice(2),
+            id: 'ee-checkbox_'+Math.random().toString(16).slice(2),
             errorList: [],
         }
     },
@@ -49,7 +49,7 @@ export default {
         },
     },
     props: {
-        modelValue: { type: [String, Number], default: '' },
+        modelValue: { type: [String, Number, Boolean], default: '' },
         label: { type: String, default: '' },
         inputTrueValue: { type: String, default: null },
         inputFalseValue: { type: String, default: null },

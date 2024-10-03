@@ -3,7 +3,6 @@
         :class="{ 'ee-no-label': label == null || label == '' }">
         <textarea
             v-model="value"
-            :type="type"
             :id="id"
             class="form-control ee-form-control"
             :class="[{ 'is-invalid': errorList.length > 0, 'empty': value == '' || value == null }, inputClass]"
@@ -23,7 +22,7 @@
 export default {
     data: function() {
         return {
-            id: 'vm-textarea_'+Math.random().toString(16).slice(2),
+            id: 'ee-textarea_'+Math.random().toString(16).slice(2),
             // Calculates the height based on the total rows to allow for floating labels with ease
             height: ((parseInt(this.rows) + 1) * 25) + 'px',
             errorList: [],

@@ -9,7 +9,6 @@
             :disabled="disabled"
             :readonly="readonly"
             @input="errorList = []">
-            <option v-if="placeholder != ''" value="" disabled hidden>{{ placeholder }}</option>
             <option v-if="newEntry" :value="newEntryValue">{{ newEntryText }}</option>
             <option v-for="(item, itemIndex) in getItems()"
                 :value="yesNo ? item.value : item[inputValue]">{{ yesNo ? item.text : item[inputText] }}</option>
@@ -24,7 +23,7 @@
 export default {
     data: function() {
         return {
-            id: 'vm-select_'+Math.random().toString(16).slice(2),
+            id: 'ee-select_'+Math.random().toString(16).slice(2),
             yesOrNo: [{ value: '1', text: 'Yes'}, { value: '0', text: 'No'}],
             errorList: [],
         }
@@ -62,7 +61,6 @@ export default {
         inputValue: { type: String, default: 'value' },
         inputText: { type: String, default: 'text' },
         label: { type: String, default: null },
-        placeholder: { type: String, default: '' },
         inputClass: { type: String, default: '' },
         errors: { type: [Array, Object], default: [] },
         disabled: { type: Boolean, default: false },

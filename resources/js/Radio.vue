@@ -23,7 +23,7 @@
 export default {
     data: function() {
         return {
-            id: 'vm-radio_'+Math.random().toString(16).slice(2),
+            id: 'ee-radio_'+Math.random().toString(16).slice(2),
             errorList: [],
         }
     },

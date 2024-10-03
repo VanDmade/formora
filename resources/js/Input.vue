@@ -21,7 +21,7 @@
 export default {
     data: function() {
         return {
-            id: 'vm-input_'+Math.random().toString(16).slice(2),
+            id: 'ee-input_'+Math.random().toString(16).slice(2),
             errorList: [],
         }
     },
