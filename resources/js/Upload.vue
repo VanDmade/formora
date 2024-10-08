@@ -133,7 +133,7 @@ export default {
         change: function(event) {
             this.selected = true;
             this.view(event);
-            let value = Array.from(this.value);
+            let value = this.value != null ? Array.from(this.value) : [];
             let files = Array.from(event.target.files);
             // Appends the files to the current list
             for (let i = 0; i < files.length; i++) {

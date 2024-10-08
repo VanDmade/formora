@@ -12,16 +12,15 @@
                     :disabled="disabled"
                     :readonly="readonly"
                     :placeholder="placeholder"
-                    @input="errorList = []"
+                    @input="errorList = []; search = true;"
                     v-on:keyup.enter="add"
-                    @focus="search = true"
                     @blur="blur">
                 <label v-if="label != null && label != ''" :for="id" class="form-label ee-form-label">{{ label }}</label>
-                <div class="ee-tag-selector shadow" v-if="search && searchList().length > 0 && item.name != ''">
+                <div class="ee-tag-selector shadow" v-show="search && searchList().length > 0 && item.name != ''">
                     <div class="ee-tags mb-0 mt-0">
                         <div class="ee-tag-container" v-for="(tag, index) in searchList()" :key="id + '_select_' + index">
                             <span class="ee-tag"
-                                @click="item = tag; add(); search = false;"
+                                @click="addListItem(tag)"
                                 :style="{ background: tag.color, color: textColor(tag.color) }">{{ tag.name }}</span>
                         </div>
                     </div>
@@ -40,7 +39,8 @@
         <div class="ee-tags mb-2">
             <span class="input-group" v-for="(tag, index) in value" :key="id + '_' + index">
                 <span class="ee-tag"
-                    @click="item = JSON.parse(JSON.stringify(tag)); $refs[id].focus();"
+                    :class="{ 'ee-tag-existing': tag.id.toString().indexOf('NEW-') }"
+                    @click="edit(tag)"
                     :style="{ background: tag.color, color: textColor(tag.color) }">{{ tag.name }}</span>
                 <span class="material-icons" @click="remove(index)">close</span>
             </span>
@@ -57,7 +57,6 @@ export default {
                 color: this.generateColor(),
                 name: '',
             },
-            search: false,
             counter: 0,
             errorList: [],
         }
@@ -99,17 +98,28 @@ export default {
                     return;
                 }
             }
-            console.log(this.item);
             // Appends the list item to the model
             this.value.push(item);
+        },
+        edit: function(tag) {
+            if (tag.id.toString().indexOf('NEW-') == 0) {
+                this.item = JSON.parse(JSON.stringify(tag));
+                this.$refs[id].focus();
+            }
         },
         remove: function(index) {
             this.value.splice(index, 1);
         },
+        addListItem: function(item) {
+            this.item = JSON.parse(JSON.stringify(item));
+            this.item.id = 'EXISTING-'+this.item.id;
+            this.add();
+            this.search = false;
+        },
         blur: function() {
             setTimeout(() => {
                 this.search = false;
-            }, 100);
+            }, 150);
         },
         searchList: function() {
             let list = [];

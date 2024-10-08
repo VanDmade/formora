@@ -99,7 +99,7 @@
         background: #fff;
         z-index: 99;
         .ee-tags {
-            min-height: 200px;
+            min-height: 120px;
             overflow-y: scroll;
             .ee-tag {
                 margin-left: 0;
@@ -124,6 +124,10 @@
         }
         .ee-tag:hover {
             opacity: 0.75;
+        }
+        .ee-tag.ee-tag-existing {
+            cursor: not-allowed;
+            opacity: 1 !important;
         }
         .input-group {
             display: inline-block;
