@@ -34,17 +34,24 @@ export default {
         }
     },
     mounted: function() {
+        if (this.value == null) {
+            return;
+        }
+        if (typeof(this.value.id) !== 'undefined') {
+            this.value = [this.value];
+        }
         setTimeout(() => {
-            if (this.value == null) {
-                return;
-            }
             var container = document.getElementById(this.id+'-container');
             var previewImage = document.getElementById(this.id);
-            for (let i = 0; i < this.value.length; i++) {
-                let [imageContainer, image, clear] = this.setupImage(this.value[i], i);
-                imageContainer.appendChild(image);
-                imageContainer.appendChild(clear);
-                container.appendChild(imageContainer);
+            if (this.value.length == 1) {
+                previewImage.src = this.value[0].path;
+            } else {
+                for (let i = 0; i < this.value.length; i++) {
+                    let [imageContainer, image, clear] = this.setupImage(this.value[i], i);
+                    imageContainer.appendChild(image);
+                    imageContainer.appendChild(clear);
+                    container.appendChild(imageContainer);
+                }
             }
             if (this.value.length > 0) {
                 this.total = this.value.length;
@@ -134,7 +141,10 @@ export default {
             this.selected = true;
             this.view(event);
             let value = this.value != null ? Array.from(this.value) : [];
-            let files = Array.from(event.target.files);
+            let files = Array.from(event.target.files); 
+            if (!this.multiple) {
+                value = [];
+            }
             // Appends the files to the current list
             for (let i = 0; i < files.length; i++) {
                 value.push({
@@ -260,7 +270,7 @@ export default {
         },
     },
     props: {
-        modelValue: { type: [File, String, Array], default: '' },
+        modelValue: { type: [File, String, Array, Object], default: '' },
         label: { type: String, default: null },
         accept: { type: String, default: 'image/png,image/jpeg,image/jpg' },
         image: { type: Boolean, default: true },
