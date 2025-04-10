@@ -1,13 +1,13 @@
 <template>
-    <div class="ee-form-input">
+    <div class="fm-form-input">
         <div class="input-group">
-            <div class="form-floating ee-form-input" :class="{ 'ee-no-label': label == null || label == '' }">
+            <div class="form-floating fm-form-input" :class="{ 'fm-no-label': label == null || label == '' }">
                 <input
                     v-model="item.name"
                     type="input"
                     :ref="id"
                     :id="id"
-                    class="form-control ee-form-control"
+                    class="form-control fm-form-control"
                     :class="[{ 'is-invalid': errorList.length > 0, 'empty': value == '' || value == null }, inputClass]"
                     :disabled="disabled"
                     :readonly="readonly"
@@ -15,11 +15,11 @@
                     @input="errorList = []; search = true;"
                     v-on:keyup.enter="add"
                     @blur="blur">
-                <label v-if="label != null && label != ''" :for="id" class="form-label ee-form-label">{{ label }}</label>
-                <div class="ee-tag-selector shadow" v-show="search && searchList().length > 0 && item.name != ''">
-                    <div class="ee-tags mb-0 mt-0">
-                        <div class="ee-tag-container" v-for="(tag, index) in searchList()" :key="id + '_select_' + index">
-                            <span class="ee-tag"
+                <label v-if="label != null && label != ''" :for="id" class="form-label fm-form-label">{{ label }}</label>
+                <div class="fm-tag-selector shadow" v-show="search && searchList().length > 0 && item.name != ''">
+                    <div class="fm-tags mb-0 mt-0">
+                        <div class="fm-tag-container" v-for="(tag, index) in searchList()" :key="id + '_select_' + index">
+                            <span class="fm-tag"
                                 @click="addListItem(tag)"
                                 :style="{ background: tag.color, color: textColor(tag.color) }">{{ tag.name }}</span>
                         </div>
@@ -29,17 +29,17 @@
             <input
                 type="color"
                 v-model="item.color"
-                class="form-control form-control-color ee-form-control-color"
+                class="form-control form-control-color fm-form-control-color"
                 @change="$refs[id].focus()">
         </div>
         <p class="notes mb-2 pl-1">Press enter once you have entered the name of the tag.</p>
-        <ul v-if="!hideDetails && errorList.length > 0" class="form-errors ee-form-errors mb-1">
-            <li v-for="(error, i) in errorList" :key="id+'-error-'+i" class="form-error ee-form-error">{{ error }}</li>
+        <ul v-if="!hideDetails && errorList.length > 0" class="form-errors fm-form-errors mb-1">
+            <li v-for="(error, i) in errorList" :key="id+'-error-'+i" class="form-error fm-form-error">{{ error }}</li>
         </ul>
-        <div class="ee-tags mb-2">
+        <div class="fm-tags mb-2">
             <span class="input-group" v-for="(tag, index) in value" :key="id + '_' + index">
-                <span class="ee-tag"
-                    :class="{ 'ee-tag-existing': tag.id.toString().indexOf('NEW-') }"
+                <span class="fm-tag"
+                    :class="{ 'fm-tag-existing': tag.id.toString().indexOf('NEW-') }"
                     @click="edit(tag)"
                     :style="{ background: tag.color, color: textColor(tag.color) }">{{ tag.name }}</span>
                 <span class="material-icons" @click="remove(index)">close</span>
@@ -51,7 +51,7 @@
 export default {
     data: function() {
         return {
-            id: 'ee-tags_'+Math.random().toString(16).slice(2),
+            id: 'fm-tags_'+Math.random().toString(16).slice(2),
             item: {
                 id: 'NEW-0',
                 color: this.generateColor(),

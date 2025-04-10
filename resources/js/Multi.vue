@@ -1,15 +1,15 @@
 <template>
-    <div class="ee-form-multi-entries">
-        <div class="ee-form-multi-entries-label">
+    <div class="fm-form-multi-entries">
+        <div class="fm-form-multi-entries-label">
             <div class="mt-4">
                 <h5 v-if="label != null" class="mt-0" :class="{ 'mb-4': notes == null, 'mb-1': notes != null }">{{ label }}</h5>
                 <p v-if="notes != null" class="notes">{{ notes }}</p>
             </div>
-            <div class="ee-form-multi-entries-add">
+            <div class="fm-form-multi-entries-add">
                 <button type="button" @click="add" class="btn btn-primary btn-sm mt-4">{{ addLabel }}</button>
             </div>
         </div>
-        <div class="ee-form-multi-entry" v-for="(mainItem, multiIndex) in value">
+        <div class="fm-form-multi-entry" v-for="(mainItem, multiIndex) in value">
             <div v-for="(item, alternativeIndex) in ([mainItem].concat(typeof(mainItem.alternatives) !== 'undefined' ? mainItem.alternatives : []))">
                 <div :class="{ 'input-group': !breakpoint('sm') }">
                     <span v-if="steps && !breakpoint('sm')" class="input-group-text">{{ item.steps == null ? (multiIndex + 1) : item.steps }}</span>
@@ -18,15 +18,15 @@
                         v-if="value.length > 1 && reorganize && alternativeIndex == 0"
                         type="button"
                         :disabled="multiIndex == 0"
-                        class="btn ee-btn-reorder ee-btn-reorder-upward btn-outline-secondary px-1"
+                        class="btn fm-btn-reorder fm-btn-reorder-upward btn-outline-secondary px-1"
                         @click="reorderUp(multiIndex)"><span class="material-icons">arrow_upward</span></button>
                     <button
                         v-if="value.length > 1 && reorganize && alternativeIndex == 0"
                         type="button"
                         :disabled="multiIndex == value.length - 1"
-                        class="btn ee-btn-reorder ee-btn-reorder-downward btn-outline-secondary px-1"
+                        class="btn fm-btn-reorder fm-btn-reorder-downward btn-outline-secondary px-1"
                         @click="reorderDown(multiIndex)"><span class="material-icons">arrow_downward</span></button>
-                    <div class="ee-button-container" :class="{ 'd-grid mt-4': breakpoint('sm'), 'ee-button-remove-border-radius': settings }">
+                    <div class="fm-button-container" :class="{ 'd-grid mt-4': breakpoint('sm'), 'fm-button-remove-border-radius': settings }">
                         <button
                             type="button"
                             class="btn btn-danger"
@@ -35,20 +35,20 @@
                     </div>
                     <slot :value="value" :index="multiIndex" :alternativeIndex="alternativeIndex == 0 ? null : (alternativeIndex - 1)" name="settings"></slot>
                 </div>
-                <div :class="{ 'ee-form-entry-flex': !breakpoint('sm') }" class="mb-2" style="min-height: 18px;">
-                    <p class="ee-form-entry-output notes pl-1 mb-0">
+                <div :class="{ 'fm-form-entry-flex': !breakpoint('sm') }" class="mb-2" style="min-height: 18px;">
+                    <p class="fm-form-entry-output notes pl-1 mb-0">
                         <slot :value="value" :index="multiIndex" :alternativeIndex="alternativeIndex == 0 ? null : (alternativeIndex - 1)" name="output"></slot>
                     </p>
                     <p v-if="slugs" class="notes mb-0 pl-1">{{ item.slug }}</p>
                 </div>
-                <ul v-if="!hideDetails && (hideDetailsWhenNoErrors && getErrors(multiIndex).length > 0)" class="form-errors ee-form-errors mb-2">
+                <ul v-if="!hideDetails && (hideDetailsWhenNoErrors && getErrors(multiIndex).length > 0)" class="form-errors fm-form-errors mb-2">
                     <li v-for="(error, i) in getErrors(multiIndex)"
                         :key="id+'-error-'+i"
-                        class="form-error ee-form-error">{{ error }}</li>
+                        class="form-error fm-form-error">{{ error }}</li>
                 </ul>
             </div>
         </div>
-        <div v-if="breakpoint('sm')" class="ee-button-container d-grid">
+        <div v-if="breakpoint('sm')" class="fm-button-container d-grid">
             <button v-if="addButton == true" type="button" @click="add" class="btn btn-primary">{{ addLabel }}</button>
         </div>
     </div>
@@ -57,7 +57,7 @@
 export default {
     data: function() {
         return {
-            id: 'ee-multi_'+Math.random().toString(16).slice(2),
+            id: 'fm-multi_'+Math.random().toString(16).slice(2),
             errorList: [],
             asking: [],
             counter: 0,

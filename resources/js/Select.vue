@@ -1,10 +1,10 @@
 <template>
-    <div class="form-floating ee-form-input"
-        :class="{ 'ee-no-label': label == null || label == '' }">
+    <div class="form-floating fm-form-input"
+        :class="{ 'fm-no-label': label == null || label == '' }">
         <select
             v-model="value"
             :id="id"
-            class="form-control form-select ee-form-control ee-form-select"
+            class="form-control form-select fm-form-control fm-form-select"
             :class="[{ 'is-invalid': errorList.length > 0, 'empty': value == '' || value == null }, inputClass]"
             :disabled="disabled"
             :readonly="readonly"
@@ -13,9 +13,9 @@
             <option v-for="(item, itemIndex) in getItems()"
                 :value="yesNo ? item.value : item[inputValue]">{{ yesNo ? item.text : item[inputText] }}</option>
         </select>
-        <label v-if="label != null && label != ''" :for="id" class="form-label ee-form-label">{{ label }}</label>
-        <ul v-if="!hideDetails" class="form-errors ee-form-errors mb-2">
-            <li v-for="(error, i) in errorList" :key="id+'-error-'+i" class="form-error ee-form-error">{{ error }}</li>
+        <label v-if="label != null && label != ''" :for="id" class="form-label fm-form-label">{{ label }}</label>
+        <ul v-if="!hideDetails" class="form-errors fm-form-errors mb-2">
+            <li v-for="(error, i) in errorList" :key="id+'-error-'+i" class="form-error fm-form-error">{{ error }}</li>
         </ul>
     </div>
 </template>
@@ -23,7 +23,7 @@
 export default {
     data: function() {
         return {
-            id: 'ee-select_'+Math.random().toString(16).slice(2),
+            id: 'fm-select_'+Math.random().toString(16).slice(2),
             yesOrNo: [{ value: '1', text: 'Yes'}, { value: '0', text: 'No'}],
             errorList: [],
         }

@@ -1,19 +1,19 @@
 <template>
-    <div class="form-floating ee-form-input"
-        :class="{ 'ee-no-label': label == null || label == '' }">
+    <div class="form-floating fm-form-input"
+        :class="{ 'fm-no-label': label == null || label == '' }">
         <input
             v-model="value"
             :type="type"
             :id="id"
-            class="form-control ee-form-control"
+            class="form-control fm-form-control"
             :class="[{ 'is-invalid': errorList.length > 0, 'empty': value == '' || value == null }, inputClass]"
             :disabled="disabled"
             :readonly="readonly"
             :placeholder="placeholder"
             @input="errorList = []">
-        <label v-if="label != null && label != ''" :for="id" class="ee-form-label">{{ label }}</label>
-        <ul v-if="!hideDetails" class="form-errors ee-form-errors mb-2">
-            <li v-for="(error, i) in errorList" :key="id+'-error-'+i" class="form-error ee-form-error">{{ error }}</li>
+        <label v-if="label != null && label != ''" :for="id" class="fm-form-label">{{ label }}</label>
+        <ul v-if="!hideDetails" class="form-errors fm-form-errors mb-2">
+            <li v-for="(error, i) in errorList" :key="id+'-error-'+i" class="form-error fm-form-error">{{ error }}</li>
         </ul>
     </div>
 </template>
@@ -21,7 +21,7 @@
 export default {
     data: function() {
         return {
-            id: 'ee-input_'+Math.random().toString(16).slice(2),
+            id: 'fm-input_'+Math.random().toString(16).slice(2),
             errorList: [],
         }
     },

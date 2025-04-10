@@ -1,10 +1,10 @@
 <template>
-    <div class="modal ee-modal fade" :id="id+'-modal'" tabindex="-1" aria-hidden="true">
+    <div class="modal fm-modal fade" :id="id+'-modal'" tabindex="-1" aria-hidden="true">
         <button type="button" v-show="false" :id="'close-'+id" data-bs-dismiss="modal"></button>
         <button type="button" v-show="false" :id="'open-'+id" data-bs-toggle="modal" :data-bs-target="'#'+id+'-modal'" data-bs-dismiss="modal"></button>
-        <div class="modal-dialog ee-modal-dialog" :style="{ 'max-width': modalWidth }">
-            <div class="modal-content ee-modal-content">
-                <div class="modal-body ee-modal-body">
+        <div class="modal-dialog fm-modal-dialog" :style="{ 'max-width': modalWidth }">
+            <div class="modal-content fm-modal-content">
+                <div class="modal-body fm-modal-body">
                     <slot></slot>
                 </div>
             </div>

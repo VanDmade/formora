@@ -1,20 +1,20 @@
 <template>
-    <div class="form-floating ee-form-input">
-        <div v-if="image" class="ee-form-uploader" @click="upload(false)">
-            <img v-show="!multiple || total <= 1" :src="default" :id="id" class="ee-image ee-image-preview" :class="{ 'ee-image-cursor': !selected }">
-            <div :id="id + '-container'" class="ee-image-container" :class="{ 'scroll': total > 1 }"></div>
-            <div v-if="!selected" class="ee-form-upload-text">
+    <div class="form-floating fm-form-input">
+        <div v-if="image" class="fm-form-uploader" @click="upload(false)">
+            <img v-show="!multiple || total <= 1" :src="default" :id="id" class="fm-image fm-image-preview" :class="{ 'fm-image-cursor': !selected }">
+            <div :id="id + '-container'" class="fm-image-container" :class="{ 'scroll': total > 1 }"></div>
+            <div v-if="!selected" class="fm-form-upload-text">
                 Browse for File Upload
-                <ul v-if="!hideDetails && errorList.length > 0" class="form-errors ee-form-errors mb-2">
-                    <li v-for="(error, i) in errorList" :key="id+'-error-'+i" class="form-error ee-form-error">{{ error }}</li>
+                <ul v-if="!hideDetails && errorList.length > 0" class="form-errors fm-form-errors mb-2">
+                    <li v-for="(error, i) in errorList" :key="id+'-error-'+i" class="form-error fm-form-error">{{ error }}</li>
                 </ul>
             </div>
-            <div v-else-if="!multiple || total <= 1" class="ee-form-upload-clear" @click="clear"><span class="material-icons">close</span></div>
+            <div v-else-if="!multiple || total <= 1" class="fm-form-upload-clear" @click="clear"><span class="material-icons">close</span></div>
         </div>
         <div class="d-grid" v-if="selected">
             <button type="button" class="btn btn-primary btn-sm mt-3" block @click="upload(true)">Upload</button>
         </div>
-        <div v-if="description != null" class="ee-upload-description">{{ description }}</div>
+        <div v-if="description != null" class="fm-upload-description">{{ description }}</div>
         <input v-show="false" type="file" :ref="'uploader-'+id" :id="'uploader-'+id" @change="change" :multiple="multiple">
     </div>
 </template>
@@ -22,7 +22,7 @@
 export default {
     data: function() {
         return {
-            id: 'ee-file_'+Math.random().toString(36).slice(2),
+            id: 'fm-file_'+Math.random().toString(36).slice(2),
             key: 0,
             default: this.$url+'default.png',
             selected: false,
@@ -168,12 +168,12 @@ export default {
         },
         setThumbnail: function(event) {
             // Makes sure not to mix up click functionality
-            if (event.target.className.indexOf('ee-form-upload-clear') != -1 ||
+            if (event.target.className.indexOf('fm-form-upload-clear') != -1 ||
                 event.target.className.indexOf('material-icons') != -1) {
                 return;
             }
-            let containers = document.querySelectorAll('.ee-form-multiple-image-container');
-            const target = event.target.closest('.ee-form-multiple-image-container');
+            let containers = document.querySelectorAll('.fm-form-multiple-image-container');
+            const target = event.target.closest('.fm-form-multiple-image-container');
             let index = Array.from(containers).indexOf(target);
             document.getElementById(this.id+'-container').prepend(target);
             // Removes the current file from it's current location and then adds it to the front
@@ -184,7 +184,7 @@ export default {
             let _this = this;
             // Creates hte container for the clear and image
             let imageContainer = document.createElement('div');
-            imageContainer.className = 'ee-form-multiple-image-container';
+            imageContainer.className = 'fm-form-multiple-image-container';
             if (_this.thumbnail) {
                 // Adds an event to allow the user to select a new thumbnail without re-uploading
                 imageContainer.addEventListener('click', (event) => {
@@ -193,9 +193,9 @@ export default {
             }
             // Creates the actual image to be displayed
             let image = document.createElement('img');
-            image.className = ['ee-image',
-                index == 0 && _this.thumbnail ? ' ee-thumbnail-image' : '',
-                _this.thumbnail ? ' ee-thumbnail-selector' : '',
+            image.className = ['fm-image',
+                index == 0 && _this.thumbnail ? ' fm-thumbnail-image' : '',
+                _this.thumbnail ? ' fm-thumbnail-selector' : '',
             ].join(' ');
             // Determines if the event is the object from the server or actual DOM event
             image.src = typeof(event.id) != 'undefined' ? event.path : event.target.result;
@@ -205,7 +205,7 @@ export default {
             icon.textContent = 'close';
             // Creates the icon to be used to clear
             let clear = document.createElement('span');
-            clear.className = 'ee-form-upload-clear ' + index;
+            clear.className = 'fm-form-upload-clear ' + index;
             clear.appendChild(icon);
             clear.addEventListener('click', (event) => {
                 _this.remove(event);
@@ -213,16 +213,16 @@ export default {
             return [imageContainer, image, clear];
         },
         remove: function(event) {
-            let buttons = document.querySelectorAll('.ee-form-upload-clear');
-            const target = event.target.closest('.ee-form-upload-clear');
+            let buttons = document.querySelectorAll('.fm-form-upload-clear');
+            const target = event.target.closest('.fm-form-upload-clear');
             let index = Array.from(buttons).indexOf(target);
             // Removes the image
-            target.closest('.ee-form-multiple-image-container').remove();
+            target.closest('.fm-form-multiple-image-container').remove();
             this.value.splice(index, 1);
             this.total--;
             if (this.total == 1) {
                 // Gets the other containers to find the last image
-                let containers = document.getElementsByClassName('ee-form-multiple-image-container');
+                let containers = document.getElementsByClassName('fm-form-multiple-image-container');
                 if (containers.length == 1) {
                     let image = containers[0].querySelector('img');
                     let previewImage = document.getElementById(this.id);
